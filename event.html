@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Event Registration</title>
+  <link rel="stylesheet" href="event.css" />
+</head>
+<body>
+
+  <div class="form-wrapper">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <span class="topbar-brand">EVNT.</span>
+      <div class="toggle-wrap">
+        <span>Light</span>
+        <label class="toggle">
+          <input type="checkbox" id="themeToggle" onchange="toggleTheme()" />
+          <span class="toggle-slider"></span>
+        </label>
+        <span>Dark</span>
+      </div>
+    </div>
+
+    <!-- CARD -->
+    <div class="card">
+
+      <div class="card-head">
+        <p class="card-eyebrow">Event Registration — 2025</p>
+        <h2>SECURE YOUR SPOT</h2>
+        <p>Register to attend. Limited spots available.</p>
+      </div>
+
+      <form id="regForm" novalidate>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="fname">First Name</label>
+            <input type="text" id="fname" placeholder="Martin" />
+            <div class="field-msg" id="fnameMsg"></div>
+          </div>
+          <div class="form-group">
+            <label for="lname">Last Name</label>
+            <input type="text" id="lname" placeholder="Villanueva" />
+            <div class="field-msg" id="lnameMsg"></div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" placeholder="you@example.com" />
+          <div class="field-msg" id="emailMsg"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="dob">Date of Birth</label>
+          <input type="date" id="dob" />
+          <div class="field-msg" id="dobMsg"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="city">City / Country</label>
+          <input type="text" id="city" placeholder="Manila, Philippines" />
+          <div class="field-msg" id="cityMsg"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            placeholder="Min. 8 chars, starts with a letter"
+            oninput="checkPassword()"
+          />
+          <div class="strength-bar" id="strengthBar" style="display:none">
+            <div class="strength-seg" id="seg1"></div>
+            <div class="strength-seg" id="seg2"></div>
+            <div class="strength-seg" id="seg3"></div>
+            <div class="strength-seg" id="seg4"></div>
+          </div>
+          <div class="field-msg" id="passMsg"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="confirm">Confirm Password</label>
+          <input type="password" id="confirm" placeholder="Re-enter your password" />
+          <div class="field-msg" id="confirmMsg"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="source">How did you hear about us?</label>
+          <select id="source">
+            <option value="">— Select an option —</option>
+            <option>Instagram</option>
+            <option>Friend / Referral</option>
+            <option>TikTok</option>
+            <option>Pop-up Event</option>
+            <option>Other</option>
+          </select>
+          <div class="field-msg" id="sourceMsg"></div>
+        </div>
+
+        <button type="submit" class="btn-submit">SECURE MY SPOT →</button>
+
+      </form>
+
+      <!-- SUCCESS -->
+      <div class="success-overlay" id="successOverlay">
+        <div class="check-mark">✓</div>
+        <h3>YOU'RE IN.</h3>
+        <p>Registration confirmed. Check your email<br/>for your access code before the event.</p>
+      </div>
+
+    </div><!-- /.card -->
+
+  </div><!-- /.form-wrapper -->
+
+  <script>
+    function toggleTheme() {
+      const dark = document.getElementById('themeToggle').checked;
+      document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+    }
+
+    function checkPassword() {
+      const pw    = document.getElementById('password').value;
+      const msg   = document.getElementById('passMsg');
+      const bar   = document.getElementById('strengthBar');
+      const input = document.getElementById('password');
+      const segs  = ['seg1','seg2','seg3','seg4'].map(id => document.getElementById(id));
+
+      segs.forEach(s => s.className = 'strength-seg');
+      bar.style.display = pw ? 'flex' : 'none';
+
+      if (!pw) { msg.textContent = ''; msg.className = 'field-msg'; input.className = ''; return; }
+
+      if (!/^[a-zA-Z]/.test(pw)) {
+        setMsg(msg, 'Must start with a letter', 'error');
+        input.className = 'invalid'; segs[0].classList.add('active','s1'); return;
+      }
+      if (!/^[a-zA-Z0-9]+$/.test(pw)) {
+        setMsg(msg, 'Only letters and numbers allowed', 'error');
+        input.className = 'invalid'; segs[0].classList.add('active','s1'); return;
+      }
+      if (pw.length < 8) {
+        setMsg(msg, `${8 - pw.length} more character(s) needed`, 'error');
+        input.className = 'invalid'; segs[0].classList.add('active','s1'); return;
+      }
+
+      let score = 2;
+      if (/[0-9]/.test(pw)) score++;
+      if (pw.length >= 12)  score++;
+
+      const cls    = ['s1','s2','s3','s4'];
+      const labels = ['Weak','Fair','Good','Strong'];
+      for (let i = 0; i < score; i++) segs[i].classList.add('active', cls[score - 1]);
+      setMsg(msg, labels[score - 1], score >= 3 ? 'success' : 'error');
+      input.className = score >= 2 ? 'valid' : 'invalid';
+    }
+
+    document.getElementById('dob').addEventListener('change', function () {
+      const year = new Date(this.value).getFullYear();
+      const msg  = document.getElementById('dobMsg');
+      if (year <= 2006) {
+        this.className = 'valid'; setMsg(msg, '✓ Age verified', 'success');
+      } else {
+        this.className = 'invalid'; setMsg(msg, '✗ Must be born in 2006 or earlier', 'error');
+      }
+    });
+
+    document.getElementById('regForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      let valid = true;
+
+      function check(id, msgId, rule, errText) {
+        const el  = document.getElementById(id);
+        const msg = document.getElementById(msgId);
+        if (rule(el.value)) {
+          el.className = 'valid'; setMsg(msg, '✓ Looks good', 'success');
+        } else {
+          el.className = 'invalid'; setMsg(msg, '✗ ' + errText, 'error'); valid = false;
+        }
+      }
+
+      check('fname',  'fnameMsg',  v => v.trim().length >= 2, 'Enter your first name');
+      check('lname',  'lnameMsg',  v => v.trim().length >= 2, 'Enter your last name');
+      check('email',  'emailMsg',  v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v), 'Enter a valid email');
+      check('city',   'cityMsg',   v => v.trim().length >= 2, 'Enter your city and country');
+      check('source', 'sourceMsg', v => v !== '', 'Please select an option');
+
+      const dob    = document.getElementById('dob');
+      const dobMsg = document.getElementById('dobMsg');
+      if (dob.value && new Date(dob.value).getFullYear() <= 2006) {
+        dob.className = 'valid'; setMsg(dobMsg, '✓ Age verified', 'success');
+      } else {
+        dob.className = 'invalid';
+        setMsg(dobMsg, dob.value ? '✗ Must be born in 2006 or earlier' : '✗ Date of birth is required', 'error');
+        valid = false;
+      }
+
+      const pw    = document.getElementById('password').value;
+      const pwMsg = document.getElementById('passMsg');
+      if (/^[a-zA-Z][a-zA-Z0-9]{7,}$/.test(pw)) {
+        document.getElementById('password').className = 'valid';
+      } else {
+        document.getElementById('password').className = 'invalid';
+        setMsg(pwMsg, '✗ Min 8 alphanumeric chars, must start with a letter', 'error');
+        valid = false;
+      }
+
+      const conf    = document.getElementById('confirm').value;
+      const confMsg = document.getElementById('confirmMsg');
+      if (conf === pw && conf.length > 0) {
+        document.getElementById('confirm').className = 'valid'; setMsg(confMsg, '✓ Passwords match', 'success');
+      } else {
+        document.getElementById('confirm').className = 'invalid'; setMsg(confMsg, '✗ Passwords do not match', 'error');
+        valid = false;
+      }
+
+      if (valid) {
+        document.getElementById('regForm').style.display = 'none';
+        document.getElementById('successOverlay').classList.add('show');
+      }
+    });
+
+    function setMsg(el, text, type) {
+      el.textContent = text;
+      el.className   = 'field-msg ' + type;
+    }
+  </script>
+
+</body>
+</html>

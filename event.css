@@ -1,0 +1,250 @@
+/* ============================================
+   EVENT REGISTRATION — STYLESHEET
+   event.css
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&display=swap');
+
+/* ── TOKENS ─────────────────────────────── */
+:root {
+  --bg:         #f0ede8;
+  --surface:    #ffffff;
+  --text:       #0a0a0a;
+  --muted:      #777777;
+  --border:     #0a0a0a;
+  --accent:     #1a3bff;
+  --error:      #cc0000;
+  --success:    #1a6e2e;
+  --input-bg:   #fafaf7;
+  --shadow:     3px 3px 0px #0a0a0a;
+}
+
+[data-theme="dark"] {
+  --bg:         #0a0a0a;
+  --surface:    #141414;
+  --text:       #f0ede8;
+  --muted:      #666666;
+  --border:     #f0ede8;
+  --accent:     #4d6aff;
+  --error:      #ff4d4d;
+  --success:    #44cc66;
+  --input-bg:   #1c1c1c;
+  --shadow:     3px 3px 0px #f0ede8;
+}
+
+/* ── RESET ───────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Space Mono', monospace;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 16px;
+  transition: background 0.3s, color 0.3s;
+}
+
+/* ── WRAPPER ─────────────────────────────── */
+.form-wrapper {
+  width: 100%;
+  max-width: 560px;
+}
+
+/* ── TOPBAR ──────────────────────────────── */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.topbar-brand {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  letter-spacing: 0.08em;
+  color: var(--text);
+  transition: color 0.3s;
+}
+
+.toggle-wrap {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.toggle { position: relative; width: 40px; height: 20px; cursor: pointer; }
+.toggle input { opacity: 0; width: 0; height: 0; }
+
+.toggle-slider {
+  position: absolute;
+  inset: 0;
+  background: var(--muted);
+  border: 2px solid var(--border);
+  transition: background 0.3s, border-color 0.3s;
+}
+
+.toggle-slider::before {
+  content: '';
+  position: absolute;
+  width: 12px; height: 12px;
+  left: 2px; top: 2px;
+  background: var(--bg);
+  transition: transform 0.3s, background 0.3s;
+}
+
+.toggle input:checked + .toggle-slider           { background: var(--accent); }
+.toggle input:checked + .toggle-slider::before   { transform: translateX(18px); }
+
+/* ── CARD ────────────────────────────────── */
+.card {
+  background: var(--surface);
+  border: 2px solid var(--border);
+  padding: 40px;
+  transition: background 0.3s, border-color 0.3s;
+}
+
+.card-head {
+  margin-bottom: 28px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid var(--border);
+  transition: border-color 0.3s;
+}
+
+.card-eyebrow {
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+
+.card-head h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 34px;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  color: var(--text);
+}
+
+.card-head p {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 6px;
+  line-height: 1.75;
+}
+
+/* ── FORM ────────────────────────────────── */
+.form-row  { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.form-group { margin-bottom: 16px; }
+
+.form-group label {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 5px;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 10px 12px;
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  color: var(--text);
+  background: var(--input-bg);
+  border: 2px solid var(--border);
+  outline: none;
+  -webkit-appearance: none;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.3s;
+}
+
+.form-group input::placeholder { color: var(--muted); opacity: 0.4; }
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: var(--accent);
+  box-shadow: var(--shadow);
+}
+
+.form-group input.invalid { border-color: var(--error);   box-shadow: 3px 3px 0 var(--error); }
+.form-group input.valid   { border-color: var(--success); box-shadow: 3px 3px 0 var(--success); }
+
+/* ── MESSAGES ────────────────────────────── */
+.field-msg {
+  font-size: 10px;
+  letter-spacing: 0.03em;
+  margin-top: 4px;
+  min-height: 13px;
+}
+.field-msg.error   { color: var(--error); }
+.field-msg.success { color: var(--success); }
+
+/* ── STRENGTH BAR ────────────────────────── */
+.strength-bar { display: flex; gap: 3px; margin-top: 6px; }
+.strength-seg {
+  height: 2px; flex: 1;
+  background: var(--border);
+  opacity: 0.2;
+  transition: background 0.3s, opacity 0.3s;
+}
+.strength-seg.active { opacity: 1; }
+.strength-seg.s1 { background: var(--error); }
+.strength-seg.s2 { background: #ff8800; }
+.strength-seg.s3 { background: #a8c800; }
+.strength-seg.s4 { background: var(--success); }
+
+/* ── BUTTON ──────────────────────────────── */
+.btn-submit {
+  width: 100%;
+  padding: 13px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+  letter-spacing: 0.18em;
+  color: #fff;
+  background: var(--text);
+  border: 2px solid var(--border);
+  cursor: pointer;
+  margin-top: 6px;
+  transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+}
+.btn-submit:hover  { background: var(--accent); box-shadow: var(--shadow); }
+.btn-submit:active { transform: translate(2px, 2px); box-shadow: none; }
+
+/* ── SUCCESS STATE ───────────────────────── */
+.success-overlay      { display: none; text-align: center; padding: 40px 0 16px; }
+.success-overlay.show { display: block; }
+
+.check-mark {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 64px;
+  color: var(--accent);
+  line-height: 1;
+}
+
+.success-overlay h3 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px;
+  margin: 10px 0 8px;
+  color: var(--text);
+}
+
+.success-overlay p {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+/* ── RESPONSIVE ──────────────────────────── */
+@media (max-width: 480px) {
+  .card     { padding: 24px 18px; }
+  .form-row { grid-template-columns: 1fr; }
+}
